@@ -1,6 +1,6 @@
 # Training and Quantization of ResNet-50 with Pytorch
 
-This directory contains resources and scripts related to the training and quantization of a ResNet-18.
+This directory contains resources and scripts related to the training and quantization of a ResNet-50.
 
 ## Folder Structure
 
