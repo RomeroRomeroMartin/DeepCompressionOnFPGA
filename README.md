@@ -1,6 +1,6 @@
 # Model Compression and Deployment for Edge Devices
 
-This repository contains the implementation of techniques for compressing deep learning models and preparing them for deployment on edge devices, specifically using the Xilinx ZCU104 FPGA. The goal of this project is to explore various methods for optimizing model performance while maintaining acceptable accuracy. 
+This repository contains the implementation of techniques for compressing deep learning models and preparing them for deployment on edge devices, specifically using the Xilinx [ZCU104](https://docs.amd.com/v/u/en-US/ug1267-zcu104-eval-bd) FPGA. The goal of this project is to explore various methods for optimizing model performance while maintaining acceptable accuracy. 
 
 ## Overview of the Project
 
@@ -31,7 +31,7 @@ The repository is organized into four main directories:
    - **Readme**: Guides the user through the distillation process.
 
 ### 4. **[Vitis-AI Workflow](./vitisai_experimentation)**
-   - **Purpose**: Integrates pruning, quantization, and compilation processes using the Vitis-AI framework to prepare models for deployment on the ZCU104 FPGA.
+   - **Purpose**: Integrates pruning, quantization, and compilation processes using the [Vitis-AI framework](https://docs.amd.com/r/en-US/ug1414-vitis-ai) to prepare models for deployment on the ZCU104 FPGA.
    - **Contents**: Contains scripts for pruning, quantization, compilation, and deployment, along with the resulting models and logs.
    - **Readme**: Details the structure and provides step-by-step instructions for using the Vitis-AI workflow.
 

@@ -14,7 +14,7 @@ This folder contains the results of applying quantization to the **ResNet-18** d
 This folder contains the results of applying quantization to the **SqueezeNet** distilled model. It includes the quantized model, its architecture, and associated files related to the quantization process. Inside this folder there is the folder [compiled_model](./quantization_squeezenet/compiled_model/), that have the final model compiled and ready to be executed in the ZCU104.
 
 ### 4. **[models](./models)**
-This folder contains the distilled models (MobileNet, ResNet-18, and SqueezeNet) that are ready to be quantized. These models are obtained from the respective distillation process.
+This folder contains the distilled models (MobileNet, ResNet-18, and SqueezeNet) that are ready to be quantized. These models are obtained from the respective distillation process. The training of distillations models is available [here](../../knowledge_distillation/).
 
 ### 5. **[quantize.py](./quantize.py)**
 A Python script for performing the quantization of the distilled models. This script takes the distilled models as input, applies the Post-Training Quantization (PTQ) process, and generates quantized versions of the models.

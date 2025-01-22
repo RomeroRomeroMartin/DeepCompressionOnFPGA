@@ -7,7 +7,7 @@ This folder contains the scripts and resources to apply pruning and quantization
 This hidden folder contains results and information generated automatically during the pruning process. It stores details such as pruning metrics and configurations applied to the models.
 
 ### 2. **[models](./models)**
-This folder contains the distilled MobileNet and the pruned MobileNet models that are ready to be quantized.
+This folder contains the distilled MobileNet and the pruned MobileNet models that are ready to be quantized. The training of distillations models is available [here](../../../knowledge_distillation/).
 
 ### 3. **[quantization_mobilenet02](./quantization_mobilenet02)**
 This folder contains the results of applying quantization to **20% pruned** MobileNet. It includes de quantized model, the architecture of quantized model and information files about the quantization process. Inside this folder there is the folder [compiled_model](./quantization_mobilenet02/compiled_model/), that have the final model compiled and ready to be executed in the ZCU104.
