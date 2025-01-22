@@ -111,7 +111,10 @@ This folder contains scripts and resources to apply quantization to previous dis
 ## 6. **[quantization_pruning](./quantization_pruning)**
 This folder contains scripts and resources to apply quantization to the previous pruned base model. (The best models of "pruning" folder are quantized here). Only PTQ was applied in this folder
 
-## 7. **[get_models_info.ipynb](./get_models_info.ipynb)**
+## 7. **[zcu104_inference](./zcu104_inference)**
+This folder contains the models and the python script to be executed in the FPGA ZCU104. 
+
+## 8. **[get_models_info.ipynb](./get_models_info.ipynb)**
 This folder contains a Jupyter Notebook that generates visualizations and graphs to support the analysis of the models in the project. The notebook is designed to work with the models present in the various folders, including those that have undergone distillation, pruning, and quantization.
 
 ### Purpose:
@@ -121,6 +124,6 @@ This folder contains a Jupyter Notebook that generates visualizations and graphs
 ### Note:
 - Please be aware that the paths to the models may have changed. If you wish to execute the notebook, make sure to review and update the paths to the models accordingly.
 
-## 8. **[dataset.py](./dataset.py)**
+## 9. **[dataset.py](./dataset.py)**
 This python program download de CIFAR10 dataset ("cifar10_images" folder)
 
