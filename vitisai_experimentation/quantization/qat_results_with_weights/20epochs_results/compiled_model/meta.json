@@ -1,0 +1,8 @@
+{
+    "lib": "libvart-dpu-runner.so",
+    "filename": "ResNet_zcu104.xmodel",
+    "kernel": [
+        "subgraph_QuantizedResNet50__QuantizedResNet50_ResNet_model__AdaptiveAvgPool2d_avgpool__12018_fix"
+    ],
+    "target": "DPUCZDX8G_ISA1_B4096"
+}

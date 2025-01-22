@@ -1,0 +1,8 @@
+{
+    "lib": "libvart-dpu-runner.so",
+    "filename": "SqueezeNet_zcu104.xmodel",
+    "kernel": [
+        "subgraph_SqueezeNet__SqueezeNet_Sequential_classifier__AdaptiveAvgPool2d_3__3974_fix"
+    ],
+    "target": "DPUCZDX8G_ISA1_B4096"
+}
