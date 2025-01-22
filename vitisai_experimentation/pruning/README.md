@@ -17,7 +17,7 @@ A Python script to perform an accuracy test of a model.
 
 ## How to run the scripts
 
-To execute the Python script for pruningthe models, simply run the following command:
+To execute the Python script for pruning the models, simply run the following command:
 
 ```bash
 python cg_pruning.py
