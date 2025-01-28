@@ -45,11 +45,6 @@ train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=64, shuffle
 test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=64, shuffle=False, num_workers=2)
 
 
-model = tmodels.mobilenet_v2(weights="IMAGENET1K_V2")
-model.classifier = nn.Sequential(
-    nn.Dropout(0.5),  # Dropout con probabilidad 0.5
-    nn.Linear(model.last_channel, 128),  # Capa completamente conectada de 128 neuronas
-    nn.ReLU(),  # Activación ReLU
-    nn.Linear(128, 10)  # Capa de salida para 10 clases (CIFAR-10)
-    )
+model = torch.load('models/mobilenet_distilled2_weights.pth')
 
+test(model, device, test_loader)

@@ -32,6 +32,7 @@ def test(model, device, test_loader):
     print('\nTest set: Accuracy: {}/{} ({:.2f}%)\n'.format(correct, len(test_loader.dataset), acc))
 
     return
+# Transformación de las imágenes
 transform = transforms.Compose([
     transforms.Resize((224, 224)),  # Cambiamos el tamaño de las imágenes para que se ajusten a ResNet-50
     transforms.ToTensor(),
@@ -41,6 +42,7 @@ transform = transforms.Compose([
 quant_model = './quantization_resnet18_095'  # Cambiar a un directorio en tu espacio de trabajo
 os.makedirs(quant_model, exist_ok=True)  # Crea el directorio si no existe
 
+# Load the model
 model = tmodels.resnet18(pretrained=True)
 model.fc = nn.Sequential(
     nn.Linear(model.fc.in_features, 256),  # Capa de 256 neuronas
@@ -50,7 +52,7 @@ model.fc = nn.Sequential(
 
 model.load_state_dict(torch.load('models/cg_pruned_resnet095_sparse.pth'))
 
-
+# Calibrating the model
 quant_mode='calib'
 
 rand_in = torch.randn([1, 3, 224, 224])
@@ -64,7 +66,7 @@ print('Accuracy quantized model in calibration mode')
 test(quantized_model, 'cuda', testloader)
 quantizer.export_quant_config()
 
-
+# Testing the model
 
 quant_mode='test'
 
@@ -75,6 +77,7 @@ quantized_model = quantizer.quant_model
 print('Accuracy quantized model in test mode')
 test(quantized_model, 'cuda', testloader)
 
+# Exporting the quantized model
 quantizer.export_xmodel(deploy_check=False, output_dir=quant_model)
 
 

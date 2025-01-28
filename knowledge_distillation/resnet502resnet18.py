@@ -12,10 +12,12 @@ temperature = 5.0  # Temperatura para la distilación
 alpha = 0.5  # Peso entre la pérdida de distilación y la pérdida de clasificación
 
 # Cargar modelos
+# Teacher model
 resnet50=torch.load('models/teacher.pth')
 resnet50.to(device)
 resnet50.eval()
 
+# Student model
 resnet18 = models.resnet18(pretrained=True)
 resnet18.fc = nn.Sequential(
     nn.Linear(resnet18.fc.in_features, 256),  # Capa de 256 neuronas

@@ -40,13 +40,13 @@ transform = transforms.Compose([
 
 quant_model = './quantization_squeezenet'  # Cambiar a un directorio en tu espacio de trabajo
 os.makedirs(quant_model, exist_ok=True)  # Crea el directorio si no existe
-
+# Load the model
 model = tmodels.squeezenet1_0(pretrained=True)
 model.classifier[1] = nn.Conv2d(512, 10, kernel_size=(1, 1), stride=(1, 1))
 
 model.load_state_dict(torch.load('models/cg_pruned_squeezenet02_sparse.pth'))
 
-
+# Calibrate the model
 quant_mode='calib'
 
 rand_in = torch.randn([1, 3, 224, 224])
@@ -60,7 +60,7 @@ print('Accuracy quantized model in calibration mode')
 test(quantized_model, 'cuda', testloader)
 quantizer.export_quant_config()
 
-
+# Test the model
 
 quant_mode='test'
 
@@ -71,6 +71,7 @@ quantized_model = quantizer.quant_model
 print('Accuracy quantized model in test mode')
 test(quantized_model, 'cuda', testloader)
 
+# Export the quantized model
 quantizer.export_xmodel(deploy_check=False, output_dir=quant_model)
 
 

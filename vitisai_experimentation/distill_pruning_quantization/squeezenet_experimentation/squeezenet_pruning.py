@@ -16,6 +16,7 @@ epochs=10
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(device)
 #device='cpu'
+# Transformaciones para las imágenes
 transform = transforms.Compose([
     transforms.Resize((224, 224)),  # Cambiamos el tamaño de las imágenes para que se ajusten a ResNet-50
     transforms.ToTensor(),
@@ -120,13 +121,18 @@ def calibration_fn(model, train_loader, number_forward=100):
 
 input_signature = torch.randn([1, 3, 224, 224], dtype=torch.float32).to(device)
 
+# Load the model
 model = models.squeezenet1_0(pretrained=True)
 model.classifier[1] = nn.Conv2d(512, 10, kernel_size=(1, 1), stride=(1, 1))
 
 model.load_state_dict(torch.load('models/squeezenet_distilled.pth'))
 model.to(device)
+
+# Pruning mode and ratio
 mode='iterative'
 ratio=0.2
+
+# Pruning
 runner = get_pruning_runner(model, input_signature, mode)
 
 if mode=='iterative':
@@ -147,6 +153,7 @@ elif mode=='one_step':
       # index=None: select optimal subnet automaticallyimport torch.nn.utils.prune as prune
   optimizer = optim.Adam(slim_model.parameters(), lr=0.001)  # Optimizador con tasa de aprendizaje baja
 
+# Fine-Tuning
 epochs=10
 criterion = nn.CrossEntropyLoss()  # Función de pérdida
 scheduler = CosineAnnealingLR(optimizer, T_max=epochs)
@@ -163,8 +170,8 @@ for epoch in range(epochs):
 test_acc = eval_fn(model, testloader)
 print(f"Precisión final en el conjunto de prueba: {test_acc:.2f}%")
 print(dir(model))
-# Guardamos el modelo ajustado. Si ejecutamos en modo iterative guardar como model.state_dict(), si ejecutamos one_step guardar como model.sparse_state_dict()
-#torch.save(model.sparse_state_dict(), 'models/cg_pruned_squeezenet02_sparse.pth')
+# Guardamos el modelo ajustado. Si ejecutamos en modo iterative guardar como model.state_dict() el modelo completo y como 
+# slim_state_dict() el modelo pruneado, si ejecutamos one_step guardar como model.sparse_state_dict() el modelo completo y con state_dict() el modelo pruneado
 torch.save(model.state_dict(), 'models/cg_pruned_squeezenet02_sparse.pth')
 
 torch.save(model.slim_state_dict(), 'models/cg_pruned_squeezenet02_mask.pth')

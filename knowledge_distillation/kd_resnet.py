@@ -48,6 +48,7 @@ for param in teacher.fc.parameters():
 # Movemos el modelo a la GPU si está disponible
 model = teacher.to(device)
 
+# Define the models architecture
 '''class StNN(nn.Module):
     def __init__(self, num_classes=10):
         super(StNN, self).__init__()
@@ -179,10 +180,7 @@ class StNN(nn.Module):
 student_noKD = StNN()
 student_noKD.to(device)
 
-'''print('TEACHER TRAINING')
-train(teacher, train_loader, epochs=20, learning_rate=0.001, device=device)
-acc_teacher= test(teacher, test_loader, device)
-torch.save(teacher, 'models/teacher.pth')'''
+
 teacher=torch.load('models/teacher.pth')
 teacher.to(device)
 acc_teacher= test(teacher, test_loader, device)
@@ -193,21 +191,10 @@ print(f"Teacher parameters: {total_params_deep}")
 total_params_light = "{:,}".format(sum(p.numel() for p in student_noKD.parameters()))
 print(f"Student parameters: {total_params_light}")
 
-
-'''print('STUDENT TRAINING (without knowledge distillation)')
-train(student_noKD, train_loader, epochs=20, learning_rate=0.001, device=device)
-acc_student_noKD= test(student_noKD, test_loader, device)
-torch.save(student_noKD, 'models/student_noKD.pth')
-student_noKD.to('cpu')'''
-'''student_noKD=torch.load('models//student_noKD.pth')
-acc_student_noKD= test(student_noKD, test_loader, device)
-student_noKD.to('cpu')'''
-
 student = StNN()
 student.to(device)
 
-#student.to('cpu')
-#teacher.to('cpu')
+# Train the student with knowledge distillation
 print('TRAINING STUDENT WITH KNOWLEDGE DISTILLATION')
 train_knowledge_distillation(teacher=teacher, student=student, train_loader=train_loader, epochs=20, learning_rate=0.001, T=2, 
                              soft_target_loss_weight=0.25, ce_loss_weight=0.75, device=device)
@@ -216,7 +203,6 @@ torch.save(student, 'models/student4_kl.pth')
 
 # Compare the student test accuracy with and without the teacher, after distillation
 print(f"Teacher accuracy: {acc_teacher:.2f}%")
-print(f"Student accuracy without teacher: {acc_student_noKD:.2f}%")
 print(f"Student accuracy with CE + KD: {acc_student:.2f}%")
 
 

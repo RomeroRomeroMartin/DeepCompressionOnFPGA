@@ -29,6 +29,7 @@ def test(model, device, test_loader):
     print('\nTest set: Accuracy: {}/{} ({:.2f}%)\n'.format(correct, len(test_loader.dataset), acc))
 
     return
+# Transformaciones para las imágenes
 transform = transforms.Compose([
     transforms.Resize((224, 224)),  # Cambiamos el tamaño de las imágenes para que se ajusten a ResNet-50
     transforms.ToTensor(),
@@ -38,6 +39,8 @@ transform = transforms.Compose([
 quant_model = '/workspace/quant_resnet50/quantization_output/'  # Cambiar a un directorio en tu espacio de trabajo
 os.makedirs(quant_model, exist_ok=True)  # Crea el directorio si no existe
 
+# Set quantization mode, first calibrate the model then test
+# quant_mode='calib'
 quant_mode='test'
 # load trained model
 model=torch.load('models/modelo_completo_resnet50_cifar10.pth')

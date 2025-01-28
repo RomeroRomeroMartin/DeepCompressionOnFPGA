@@ -26,10 +26,14 @@ testloader = DataLoader(testset, batch_size=64, shuffle=False, num_workers=2)
 
 # Cargar el modelo maestro (teacher)
 teacher_model = torch.load('models/teacher.pth')  # Asegúrate de que este modelo esté entrenado
-teacher_model.to(device)student_model = models.squeezenet1_0(pretrained=True)
+teacher_model.to(device)
+
+# Student model
+student_model = models.squeezenet1_0(pretrained=True)
 student_model.classifier[1] = nn.Conv2d(512, 10, kernel_size=(1, 1), stride=(1, 1))  # Cambiar para 10 clases
+
 # Optimizer
-optimizer = optim.Adam(student_model.parameters(), lr=learning_rate)
+optimizer = optim.Adam(student_model.parameters(), lr=0.001)
 
 # Función de pérdida
 def distillation_loss(y_student, y_teacher, temperature):
@@ -37,6 +41,8 @@ def distillation_loss(y_student, y_teacher, temperature):
                           F.softmax(y_teacher / temperature, dim=1)) * (temperature ** 2)
     return loss
 
+num_epochs = 10
+temperature = 5.0 
 # Entrenamiento del modelo de distilación
 for epoch in range(num_epochs):
     student_model.train()

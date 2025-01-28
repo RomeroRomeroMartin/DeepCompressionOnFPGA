@@ -16,6 +16,7 @@ epochs=10
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(device)
 #device='cpu'
+# Transformación de las imágenes
 transform = transforms.Compose([
     transforms.Resize((224, 224)),  # Cambiamos el tamaño de las imágenes para que se ajusten a ResNet-50
     transforms.ToTensor(),
@@ -120,6 +121,7 @@ def calibration_fn(model, train_loader, number_forward=100):
 
 input_signature = torch.randn([1, 3, 224, 224], dtype=torch.float32).to(device)
 
+# Load the model
 model = models.resnet18(pretrained=True)
 model.fc = nn.Sequential(
     nn.Linear(model.fc.in_features, 256),  # Capa de 256 neuronas
@@ -129,10 +131,14 @@ model.fc = nn.Sequential(
 
 model.load_state_dict(torch.load('models/resnet18_distilled_weights.pth'))
 model.to(device)
+# Select the pruning mode and ratio
 mode='one_step'
 ratio=0.95
+
+# Pruning runner
 runner = get_pruning_runner(model, input_signature, mode)
 
+#Apply pruning
 if mode=='iterative':
   runner.ana(eval_fn, args=(valloader,))
 
@@ -154,6 +160,7 @@ elif mode=='one_step':
   #model = slim_model
   optimizer = optim.Adam(slim_model.parameters(), lr=0.001)  # Optimizador con tasa de aprendizaje baja
 
+#Fine-tuning
 epochs=10
 criterion = nn.CrossEntropyLoss()  # Función de pérdida
 scheduler = CosineAnnealingLR(optimizer, T_max=epochs)

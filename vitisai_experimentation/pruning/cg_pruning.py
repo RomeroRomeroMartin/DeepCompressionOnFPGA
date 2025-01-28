@@ -15,6 +15,7 @@ epochs=10
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(device)
 #device='cpu'
+# Load the CIFAR-10 dataset
 transform = transforms.Compose([
     transforms.Resize((224, 224)),  # Cambiamos el tamaño de las imágenes para que se ajusten a ResNet-50
     transforms.ToTensor(),
@@ -118,10 +119,12 @@ def calibration_fn(model, train_loader, number_forward=100):
   print("Adaptive BN end...")
 
 input_signature = torch.randn([1, 3, 224, 224], dtype=torch.float32).to(device)
-
+# Load the pre-trained ResNet-50 model
 model = torch.load('models/teacher.pth').to(device)
+# Select the mode for pruning: iterative or one_step and the ratio of pruning
 mode='one_step'
 ratio=0.2
+# Start pruning
 runner = get_pruning_runner(model, input_signature, mode)
 
 if mode=='iterative':
@@ -143,6 +146,7 @@ elif mode=='one_step':
       removal_ratio=ratio, mode='slim', index=None, channel_divisible=2)
   #model = slim_model
 
+# Fine-Tuning del modelo pruneado
 epochs=10
 criterion = nn.CrossEntropyLoss()  # Función de pérdida
 optimizer = optim.Adam(slim_model.parameters(), lr=0.001)  # Optimizador con tasa de aprendizaje baja

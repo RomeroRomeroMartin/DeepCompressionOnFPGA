@@ -13,10 +13,12 @@ alpha = 0.5  # Peso para la pérdida de clasificación vs distilación en la sal
 beta = 0.5  # Peso para la distilación entre capas
 
 # Cargar modelos
+# Teacher models
 resnet50=torch.load('models/teacher.pth')
 resnet50.to(device)
 resnet50.eval()
 
+# Student model
 resnet18 = models.resnet18(pretrained=True)
 resnet18.fc = nn.Sequential(
     nn.Linear(resnet18.fc.in_features, 256),
@@ -94,7 +96,7 @@ for epoch in range(epochs):
         with torch.no_grad():
             teacher_logits = resnet50(inputs)
 
-        # Distilación en la salida (logits)
+        # Destilación en la salida (logits)
         teacher_probs = nn.functional.softmax(teacher_logits / temperature, dim=1)
         student_probs = nn.functional.log_softmax(student_logits / temperature, dim=1)
         loss_kl = criterion_kl(student_probs, teacher_probs) * (temperature ** 2)

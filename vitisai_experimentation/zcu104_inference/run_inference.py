@@ -12,6 +12,7 @@ import pathlib
 import cv2
 from PIL import Image
 
+# Definir la función de preprocesamiento
 def preprocess_fn(image_path, fix_scale):
     # Leer la imagen
     image = cv2.imread(image_path)
@@ -46,6 +47,7 @@ def get_child_subgraph_dpu(graph: "Graph") -> List["Subgraph"]:
 def softmax(x):
     return np.exp(x) / sum(np.exp(x))
 
+# Función para obtner la clase predicha
 def runDPU(dpu, img):
     inputTensors = dpu.get_input_tensors()
     outputTensors = dpu.get_output_tensors()
@@ -80,6 +82,7 @@ def runDPU(dpu, img):
     out_q = np.argmax(scaled_output)  # Obtener la clase predicha
     return [out_q]
 
+# Función principal
 def app(image_dir, model):
     classes = os.listdir(image_dir)
     classes = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
@@ -123,6 +126,7 @@ def app(image_dir, model):
 
     return
 
+# Función principal
 def main():
     parser = argparse.ArgumentParser(description="DPU Inference Script")
     parser.add_argument('--image_dir', type=str, required=True, help="Path to the directory containing test images.")

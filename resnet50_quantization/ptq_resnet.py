@@ -25,11 +25,11 @@ trainloader = DataLoader(trainset, batch_size=64, shuffle=True, num_workers=2)
 testset = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=transform)
 testloader = DataLoader(testset, batch_size=64, shuffle=False, num_workers=2)
 
-
+# Load the pretrained model
 model=torch.load('ResnetModels/modelo_completo_resnet50_cifar10.pth')
 model.to(device)
 
-
+# Quantization
 backend = "qnnpack"
 model.qconfig = torch.quantization.get_default_qconfig(backend)
 torch.backends.quantized.engine = backend
@@ -39,12 +39,13 @@ model.eval()
 example_inputs = (torch.randn(1, 3, 224, 224),)
 model = prepare_fx(model, qconfig_mapping, example_inputs)
 
-
+# Calibrating the model
 with torch.no_grad():
     for images, _ in testloader:
         images = images.to(device)  # Los datos deben estar en la CPU para la calibración
         model(images)
 
+# Convert the model to a quantized model
 model = convert_fx(model)
 
 traced_model = torch.jit.trace(model, torch.randn(1, 3, 224, 224))

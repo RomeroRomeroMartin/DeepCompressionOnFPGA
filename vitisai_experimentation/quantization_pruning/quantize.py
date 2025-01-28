@@ -52,6 +52,7 @@ def test(model, device, test_loader):
     print('\nTest set: Accuracy: {}/{} ({:.2f}%)\n'.format(correct, len(test_loader.dataset), acc))
 
     return
+# Transformaciones para las imágenes
 transform = transforms.Compose([
     transforms.Resize((224, 224)),  # Cambiamos el tamaño de las imágenes para que se ajusten a ResNet-50
     transforms.ToTensor(),
@@ -69,35 +70,37 @@ model.load_state_dict(torch.load('models/cg_pruned_os095_sparse.pth'))
 model.to(device)
 
 input_signature = torch.randn([1, 3, 224, 224], dtype=torch.float32).to(device)
+# Pruning
 mode='one_step'
 runner = get_pruning_runner(model, input_signature, mode)
 slim_model = runner.prune(removal_ratio=0.95, mode='slim')
 slim_model.load_state_dict(torch.load('models/cg_pruned_os095_mask.pth'))
-
+# Test the model
 testset = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=transform)
 testloader = DataLoader(testset, batch_size=1, shuffle=False, num_workers=2)
 test(slim_model, 'cuda', testloader)
 
+# Quantization
 quant_mode='calib'
 
 rand_in = torch.randn([1, 3, 224, 224])
 quantizer = torch_quantizer(quant_mode, slim_model, (rand_in), output_dir=quant_model) 
 quantized_model = quantizer.quant_model
-
+# Test the model
 print('Accuracy quantized model in calibration mode')
 test(quantized_model, 'cuda', testloader)
 
 quantizer.export_quant_config()
 
-
+#Quantized model in test mode
 quant_mode='test'
 
 rand_in = torch.randn([1, 3, 224, 224])
 quantizer = torch_quantizer(quant_mode, slim_model, (rand_in), output_dir=quant_model) 
 quantized_model = quantizer.quant_model
-
+# Test the model
 print('Accuracy quantized model in test mode')
 test(quantized_model, 'cuda', testloader)
-
+# Export the quantized model
 quantizer.export_xmodel(deploy_check=False, output_dir=quant_model)
 

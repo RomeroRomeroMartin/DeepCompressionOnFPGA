@@ -32,6 +32,7 @@ def test(model, device, test_loader):
     print('\nTest set: Accuracy: {}/{} ({:.2f}%)\n'.format(correct, len(test_loader.dataset), acc))
 
     return
+# Transformación de las imágenes
 transform = transforms.Compose([
     transforms.Resize((224, 224)),  # Cambiamos el tamaño de las imágenes para que se ajusten a ResNet-50
     transforms.ToTensor(),
@@ -41,6 +42,7 @@ transform = transforms.Compose([
 quant_model = './quantization_resnet18'  # Cambiar a un directorio en tu espacio de trabajo
 os.makedirs(quant_model, exist_ok=True)  # Crea el directorio si no existe
 
+# Load trained model
 model_path='models/resnet18_distilled_weights.pth'
 
 # load trained model
@@ -69,11 +71,15 @@ elif 'resnet18' in model_path:
 
 model.load_state_dict(torch.load(model_path))
 model.to(device)
+
+# Load CIFAR-10 test dataset
 testset = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=transform)
 testloader = DataLoader(testset, batch_size=1, shuffle=False, num_workers=2)
+# Test the model
 test(model, 'cuda', testloader)
 
-
+# Select quantization mode, calib or test
+# First, calibrate the model, then test the model
 quant_mode='calib'
 
 rand_in = torch.randn([1, 3, 224, 224])
@@ -81,7 +87,7 @@ quantizer = torch_quantizer(quant_mode, model, (rand_in), output_dir=quant_model
 quantized_model = quantizer.quant_model
 
 
-
+# Test quantized model
 print('Accuracy quantized model in '+quant_mode+' mode')
 test(quantized_model, 'cuda', testloader)
 

@@ -67,12 +67,7 @@ model = model.to(device)
 # Preparar el modelo para Quantization Aware Training (QAT)
 model.eval()
 model.qconfig = torch.quantization.get_default_qat_qconfig('fbgemm')
-'''for name, module in model.named_modules():
-    if isinstance(module, nn.Conv2d):
-        module.qconfig = torch.quantization.QConfig(
-            activation=torch.quantization.FakeQuantize.with_args(observer=torch.quantization.default_observer),
-            weight=torch.quantization.default_weight_fake_quant
-        )'''
+
 #model = torch.quantization.prepare(model)
 qconfig_mapping = torch.ao.quantization.get_default_qconfig_mapping('fbgemm')
 example_inputs = (torch.randn(1, 3, 224, 224),)

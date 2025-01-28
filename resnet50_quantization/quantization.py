@@ -25,7 +25,7 @@ testloader = DataLoader(testset, batch_size=64, shuffle=False, num_workers=2)
 # Cargar el modelo previamente entrenado
 #model = torch.load('ResnetModels/modelo_completo_resnet50_cifar10.pth', weights_only=False)
 
-
+# Definir la clase del modelo cuantizable
 class QuantizableResNet50(nn.Module):
     def __init__(self):
         super(QuantizableResNet50, self).__init__()

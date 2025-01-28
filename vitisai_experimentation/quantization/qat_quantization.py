@@ -103,6 +103,7 @@ def test_model(model, testloader):
             correct += (predicted == labels).sum().item()
 
     print(f"Precisión en el conjunto de prueba: {100 * correct / total:.2f}%")
+# Load the model
 mode='train'
 output_dir='qat_results/20epoch_results/'
 model = QuantizedResNet50(model)
@@ -117,11 +118,15 @@ print(dir(quantized_model.parameters()))
 optimizer = optim.Adam(quantized_model.parameters(), lr=0.001)
 #best_ckpt = train(quantized_model, trainloader, testloader, criterion, device_ids=None)
 #quantized_model.load_state_dict(torch.load(best_ckpt)['state_dict'])
+
+# Step 2: Train the quantized model
 quantized_model=train_model(quantized_model, trainloader, criterion, optimizer, num_epochs=20)
 deployable_model = qat_processor.to_deployable(quantized_model, output_dir)
 #validate(testloader, deployable_model, criterion, device)
+# Step 3: Test the quantized model
 test_model(deployable_model, testloader)
 
+# Step 4: Export the quantized model
 deployable_model = qat_processor.deployable_model(
         output_dir, used_for_xmodel=True)
 val_subset = torch.utils.data.Subset(testset, list(range(1)))

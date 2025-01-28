@@ -141,6 +141,7 @@ def test(model, device, test_loader):
 
 input_signature = torch.randn([1, 3, 224, 224], dtype=torch.float32).to(device)
 
+# Load MobileNetV2 pre-trained
 model = models.mobilenet_v2(weights="IMAGENET1K_V2")
 model.classifier = nn.Sequential(
     nn.Dropout(0.5),  # Dropout con probabilidad 0.5
@@ -150,8 +151,10 @@ model.classifier = nn.Sequential(
 )
 model.load_state_dict(torch.load('models/mobilenet_distilled2_weights.pth'))
 model.to(device)
+# Select the mode and ratio of pruning
 mode='one_step'
 ratio=0.95
+# Pruning
 runner = get_pruning_runner(model, input_signature, mode)
 
 if mode=='iterative':
@@ -175,6 +178,7 @@ elif mode=='one_step':
   #model = slim_model
   optimizer = optim.Adam(slim_model.parameters(), lr=0.001)  # Optimizador con tasa de aprendizaje baja
 
+# Fine-Tuning
 epochs=10
 criterion = nn.CrossEntropyLoss()  # Función de pérdida
 scheduler = CosineAnnealingLR(optimizer, T_max=epochs)
@@ -196,6 +200,7 @@ print(f"Accuracy of pruned model: {test_acc:.2f}%")
 quant_model = './quantization_mobilenet095'  # Cambiar a un directorio en tu espacio de trabajo
 os.makedirs(quant_model, exist_ok=True)  # Crea el directorio si no existe
 
+# Calibration
 quant_mode='calib'
 
 rand_in = torch.randn([1, 3, 224, 224])
@@ -210,7 +215,7 @@ test(quantized_model, 'cuda', testloader)
 
 quantizer.export_quant_config()
 
-
+# Test quantized model
 quant_mode='test'
 
 rand_in = torch.randn([1, 3, 224, 224])
@@ -220,4 +225,5 @@ quantized_model = quantizer.quant_model
 print('Test quantized model in test mode')
 test(quantized_model, 'cuda', testloader)
 
+# Export quantized model
 quantizer.export_xmodel(deploy_check=False, output_dir=quant_model)

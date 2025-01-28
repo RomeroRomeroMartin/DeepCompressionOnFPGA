@@ -12,10 +12,12 @@ temperature = 5.0  # Temperatura para la distilación
 alpha = 0.5  # Peso entre la pérdida de distilación y la pérdida de clasificación
 
 # Cargar modelos
+# Teacher model
 resnet50=torch.load('models/teacher.pth')
 resnet50.to(device)
 resnet50.eval()
 
+# Student model
 mobilenet = models.mobilenet_v2(weights="IMAGENET1K_V2")
 mobilenet.classifier = nn.Sequential(
     nn.Dropout(0.5),  # Dropout con probabilidad 0.5
